@@ -1,33 +1,44 @@
-const methods = require('express').Router();
+const router = require('express').Router();
 const fs = require("fs");
 const util = require('util');
 const { v4: uuidv4 } = require('uuid');
+// const{getNotes} = require ('../db/getNotes.js')
 
 const getNotes = util.promisify(fs.readFile)
 
+router.get('/notes', (req, res) => {
+    getNotes('./db/db.json', "utf8")
+      .then((notes) => {
+        res.json(JSON.parse(notes))
+      })
+  })
 
-const addNotes = () => {
-    methods.post('./db.json', (req, res) => {
-        console.log(req.body);
+router.post('/notes', (req, res) => {
+    console.log(req.body);
 
-        const { noteTitle, noteText } = req.body;
+    const { noteTitle, noteText } = req.body;
 
+    if (noteTitle, noteText) {
         const newNote = {
             noteTitle,
             noteText,
             note_id: uuidv4(),
         };
-
         readAndAppend(newNote, './db.json');
+        fs.writeFile
         res.json(`Note added successfully 🚀`);
+    } else {
+        res.json('Error in adding note')
+    }
+    // window.location.reload();
 
-    });
-}
-const deleteNotes = () => {
-    methods.delete('db.json', (req,res) =>{
+});
+// }
 
-    })
- }
+router.delete('/notes/:note_id', (req, res) => {
+
+})
+
 
 
 
@@ -42,4 +53,4 @@ const deleteNotes = () => {
 // writeToFile(newNote)
 
 
-module.exports = { getNotes, addNotes, deleteNotes };
+module.exports = router;
