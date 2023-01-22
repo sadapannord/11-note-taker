@@ -2,42 +2,61 @@ const router = require('express').Router();
 const fs = require("fs");
 const util = require('util');
 const { v4: uuidv4 } = require('uuid');
-// const{getNotes} = require ('../db/getNotes.js')
+const { getNotes, saveNotes } = require('../db/getNotes.js')
 
-const getNotes = util.promisify(fs.readFile)
 
 router.get('/notes', (req, res) => {
     getNotes('./db/db.json', "utf8")
-      .then((notes) => {
-        res.json(JSON.parse(notes))
-      })
-  })
+        .then((notes) => {
+            res.json(JSON.parse(notes))
+        })
+})
 
 router.post('/notes', (req, res) => {
     console.log(req.body);
 
-    const { noteTitle, noteText } = req.body;
+    const { title, text } = req.body;
 
-    if (noteTitle, noteText) {
+    if (title, text) {
         const newNote = {
-            noteTitle,
-            noteText,
-            note_id: uuidv4(),
+            title,
+            text,
+            id: uuidv4(),
         };
-        readAndAppend(newNote, './db.json');
-        fs.writeFile
-        res.json(`Note added successfully 🚀`);
+        getNotes('./db/db.json', 'utf8').then(notes => {
+            let allNotes = JSON.parse(notes)
+            allNotes.push(newNote)
+            saveNotes('./db/db.json', JSON.stringify(allNotes))
+                .then(() => {
+                    res.json(newNote);
+                })
+        })
+
     } else {
         res.json('Error in adding note')
     }
-    // window.location.reload();
+  
 
 });
+
+
+// router.delete('/notes/:id', (req, res) => {
+
+//     if (id) {
+//         getNotes('./db/db.json', 'utf8').then(notes => {
+//             let allNotes = JSON.parse(notes)
+//             allNotes.push(newNote)
+//             deleteNotes('./db/db.json', JSON.stringify(allNotes))
+//                 .then(() => {
+//                     res.json(newNote);
+//                 })
+//         })
+
+//     } else {
+//         res.json('Error in deleting note')
+
 // }
-
-router.delete('/notes/:note_id', (req, res) => {
-
-})
+// })
 
 
 
