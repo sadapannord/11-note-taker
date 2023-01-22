@@ -2,7 +2,7 @@ const router = require('express').Router();
 const fs = require("fs");
 const util = require('util');
 const { v4: uuidv4 } = require('uuid');
-const { getNotes, saveNotes } = require('../db/getNotes.js')
+const { getNotes, saveNotes, /*deleteNotes*/ } = require('../db/getNotes.js')
 
 
 router.get('/notes', (req, res) => {
@@ -42,7 +42,7 @@ router.post('/notes', (req, res) => {
 
 // router.delete('/notes/:id', (req, res) => {
 
-//     if (id) {
+//     if (note.id) {
 //         getNotes('./db/db.json', 'utf8').then(notes => {
 //             let allNotes = JSON.parse(notes)
 //             allNotes.push(newNote)
